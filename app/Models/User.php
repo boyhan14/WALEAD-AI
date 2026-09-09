@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -33,9 +34,9 @@ class User extends Authenticatable
     /**
      * Get all workspaces the user belongs to.
      */
-    public function workspaces()
+    public function workspaces(): BelongsToMany
     {
-        return $this->belongsToMany(Workspace::class)->withPivot('role')->withTimestamps();
+        return $this->belongsToMany(Workspace::class, 'workspace_user')->withPivot('role')->withTimestamps();
     }
 
     /**
@@ -44,5 +45,18 @@ class User extends Authenticatable
     public function currentWorkspace()
     {
         return $this->belongsTo(Workspace::class, 'current_workspace_id');
+    }
+
+    /**
+     * Determine whether the user has one of the supplied roles in the active workspace.
+     *
+     * @param  array<int, string>  $roles
+     */
+    public function hasAnyWorkspaceRole(array $roles): bool
+    {
+        return $this->workspaces()
+            ->whereKey($this->current_workspace_id)
+            ->wherePivotIn('role', $roles)
+            ->exists();
     }
 }

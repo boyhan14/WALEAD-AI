@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Channel;
 use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,6 +43,21 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+        ]);
+
+        // Auto-provision initial workspace & channel for onboarding
+        $workspace = Workspace::create([
+            'name' => $user->name.' Store',
+        ]);
+
+        $user->workspaces()->attach($workspace->id, ['role' => 'OWNER']);
+        $user->update(['current_workspace_id' => $workspace->id]);
+
+        Channel::create([
+            'workspace_id' => $workspace->id,
+            'type' => 'WHATSAPP',
+            'name' => 'WhatsApp Utama',
+            'status' => 'ACTIVE',
         ]);
 
         event(new Registered($user));

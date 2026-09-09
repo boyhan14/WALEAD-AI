@@ -24,7 +24,7 @@ trait BelongsToWorkspace
     protected static function bootBelongsToWorkspace(): void
     {
         static::creating(function ($model) {
-            if (auth()->check() && ! $model->workspace_id) {
+            if (auth()->check()) {
                 $model->workspace_id = auth()->user()->current_workspace_id;
             }
         });

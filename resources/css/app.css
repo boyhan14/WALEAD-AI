@@ -1,3 +1,273 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	html {
+		scroll-behavior: smooth;
+	}
+
+	body {
+		font-family: 'Manrope', sans-serif;
+		background: #f7f9f7;
+		color: #17221d;
+	}
+
+	::selection {
+		background: #c9f36d;
+		color: #173b2d;
+	}
+}
+
+@layer components {
+
+	.public-shell {
+		background-color: #f7f9f7;
+		background-image: radial-gradient(circle at 50% -10%, rgba(216, 245, 228, 0.7), transparent 34rem), radial-gradient(rgba(23, 59, 45, 0.035) 0.7px, transparent 0.7px);
+		background-size: auto, 18px 18px;
+	}
+
+	.public-header {
+		box-shadow: 0 1px 0 rgba(23, 59, 45, 0.03), 0 8px 24px rgba(23, 59, 45, 0.04);
+	}
+
+	.surface-gloss {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(244, 250, 246, 0.96));
+		box-shadow: 0 24px 60px rgba(25, 65, 45, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+		transition: transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 400ms ease;
+	}
+
+	.surface-gloss::before {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: linear-gradient(118deg, rgba(255, 255, 255, 0.65), transparent 28%, transparent 74%, rgba(216, 245, 228, 0.2));
+		content: '';
+		pointer-events: none;
+	}
+
+	.surface-gloss:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 32px 72px rgba(25, 65, 45, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.98);
+	}
+
+	.pricing-card {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		transition: transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 400ms ease;
+	}
+
+	.pricing-card::after {
+		position: absolute;
+		inset: 1px;
+		z-index: -1;
+		border-radius: inherit;
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), transparent 36%);
+		content: '';
+		pointer-events: none;
+	}
+
+	.pricing-card:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 28px 65px rgba(25, 65, 45, 0.12);
+	}
+
+	.pricing-card-featured {
+		box-shadow: 0 28px 75px rgba(8, 183, 122, 0.16), 0 8px 22px rgba(23, 59, 45, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+	}
+
+	.pricing-card-featured:hover {
+		box-shadow: 0 36px 88px rgba(8, 183, 122, 0.2), 0 10px 24px rgba(23, 59, 45, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+	}
+
+	.public-shell section#product [class*='rounded-[24px]'],
+	.public-shell section#pricing [class*='rounded-[24px]'],
+	.public-shell section#roi [class*='rounded-[26px]'],
+	.public-shell section:not(#product):not(#pricing):not(#roi) [class*='rounded-[26px]'] {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		box-shadow: 0 22px 55px rgba(25, 65, 45, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+		transition: transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 400ms ease;
+	}
+
+	.public-shell section#product [class*='rounded-[24px]']::before,
+	.public-shell section#pricing [class*='rounded-[24px]']::before,
+	.public-shell section#roi [class*='rounded-[26px]']::before,
+	.public-shell section:not(#product):not(#pricing):not(#roi) [class*='rounded-[26px]']::before {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: linear-gradient(125deg, rgba(255, 255, 255, 0.22), transparent 30%, rgba(216, 245, 228, 0.08));
+		content: '';
+		pointer-events: none;
+	}
+
+	.public-shell section#product [class*='rounded-[24px]']:hover,
+	.public-shell section#pricing [class*='rounded-[24px]']:hover,
+	.public-shell section#roi [class*='rounded-[26px]']:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 30px 70px rgba(25, 65, 45, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+	}
+
+	.public-shell section#pricing [class*='border-2'] {
+		box-shadow: 0 30px 76px rgba(8, 183, 122, 0.17), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+	}
+
+	.app-shell {
+		background: #f7f9f7;
+		background-image: radial-gradient(circle at 80% 0%, rgba(216, 245, 228, 0.55), transparent 28rem), radial-gradient(rgba(23, 59, 45, 0.025) 0.7px, transparent 0.7px);
+		background-size: auto, 18px 18px;
+		color: #17221d;
+	}
+
+	.app-header {
+		box-shadow: 0 8px 26px rgba(23, 59, 45, 0.045);
+	}
+
+	.app-shell input,
+	.app-shell select,
+	.app-shell textarea {
+		border-color: #dce6df;
+		background-color: rgba(255, 255, 255, 0.85);
+		color: #17221d;
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+	}
+
+	.app-shell input:focus,
+	.app-shell select:focus,
+	.app-shell textarea:focus {
+		border-color: #08b77a;
+		box-shadow: 0 0 0 3px rgba(8, 183, 122, 0.14);
+		outline: none;
+	}
+
+	.app-shell main > div {
+		min-height: calc(100vh - 145px);
+	}
+
+	.app-shell main > div > div {
+		max-width: 1440px;
+	}
+
+	.app-shell main [class~='bg-white'][class*='shadow'] {
+		border: 1px solid #e3eae6;
+		background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 252, 249, 0.96)) !important;
+		box-shadow: 0 18px 50px rgba(25, 65, 45, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+	}
+
+	.app-shell main [class~='rounded-lg'][class~='border'],
+	.app-shell main [class~='rounded-lg'][class~='shadow'],
+	.app-shell main [class~='rounded-xl'][class~='border'],
+	.app-shell main [class~='rounded-xl'][class~='shadow'] {
+		border-color: #e3eae6;
+		box-shadow: 0 16px 42px rgba(25, 65, 45, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+	}
+
+	.app-shell main [class~='bg-gray-50'],
+	.app-shell main [class~='bg-gray-100'] {
+		background-color: #f1f7f4 !important;
+	}
+
+	.app-shell main [class~='rounded-lg'],
+	.app-shell main [class~='rounded-md'] {
+		border-radius: 14px;
+	}
+
+	.app-shell main table tbody tr {
+		transition: background-color 200ms ease;
+	}
+
+	.app-shell main table tbody tr:hover {
+		background-color: #f1f7f4;
+	}
+
+	.app-shell main table th {
+		letter-spacing: 0.08em;
+	}
+
+	.app-shell main button:not([aria-label='Toggle menu']) {
+		transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+	}
+
+	.app-shell main button:not([aria-label='Toggle menu']):hover {
+		transform: translateY(-1px);
+	}
+
+	/* Keep the active product language light while legacy page classes are migrated. */
+	.app-shell [class~='dark:bg-gray-900'],
+	.app-shell [class~='dark:bg-gray-800'],
+	.app-shell [class~='dark:bg-gray-700'],
+	.app-shell [class~='dark:bg-gray-600'] {
+		background-color: #ffffff !important;
+	}
+
+	.app-shell [class~='dark:bg-gray-900\/50'],
+	.app-shell [class~='dark:bg-gray-800\/50'] {
+		background-color: #f1f7f4 !important;
+	}
+
+	.app-shell [class~='dark:border-gray-700'],
+	.app-shell [class~='dark:border-gray-600'] {
+		border-color: #e3eae6 !important;
+	}
+
+	.app-shell [class~='dark:text-gray-100'],
+	.app-shell [class~='dark:text-gray-200'],
+	.app-shell [class~='dark:text-gray-300'],
+	.app-shell [class~='dark:text-gray-400'],
+	.app-shell [class~='dark:text-gray-500'] {
+		color: #64736c !important;
+	}
+
+	.app-shell [class*='dark:bg-'] {
+		background-color: #ffffff !important;
+	}
+
+	.app-shell [class*='dark:bg-gray-900/'],
+	.app-shell [class*='dark:bg-gray-800/'],
+	.app-shell [class*='dark:bg-blue-900/'],
+	.app-shell [class*='dark:bg-emerald-950/'] {
+		background-color: #f1f7f4 !important;
+	}
+
+	.app-shell [class*='dark:border-'] {
+		border-color: #e3eae6 !important;
+	}
+
+	.app-shell [class*='dark:text-'] {
+		color: #64736c !important;
+	}
+
+	.guest-shell [class*='dark:bg-'] {
+		background-color: #ffffff !important;
+	}
+
+	.guest-shell [class*='dark:border-'] {
+		border-color: #d8ded7 !important;
+	}
+
+	.guest-shell [class*='dark:text-'] {
+		color: #64736c !important;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+	}
+}
