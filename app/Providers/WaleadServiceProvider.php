@@ -32,6 +32,7 @@ class WaleadServiceProvider extends ServiceProvider
                     apiKey: $this->requireApiKey('gemini'),
                     model: config('ai.gemini.model'),
                     baseUrl: config('ai.gemini.base_url'),
+                    fallbackModels: config('ai.gemini.fallback_models', []),
                 ),
                 default => new MockAIProvider,
             };

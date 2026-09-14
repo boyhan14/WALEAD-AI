@@ -256,6 +256,95 @@
 	.guest-shell [class*='dark:text-'] {
 		color: #64736c !important;
 	}
+
+	/* Moving Shimmer Effects (Medium Speed) */
+	@keyframes shimmer-sweep {
+		0% {
+			transform: translateX(-160%) skewX(-20deg);
+		}
+		45% {
+			transform: translateX(180%) skewX(-20deg);
+		}
+		100% {
+			transform: translateX(180%) skewX(-20deg);
+		}
+	}
+
+	.shimmer-dark {
+		position: relative;
+		overflow: hidden;
+		isolation: isolate;
+	}
+
+	.shimmer-dark::after {
+		content: '';
+		position: absolute;
+		top: -50%;
+		left: -50%;
+		width: 200%;
+		height: 200%;
+		background: linear-gradient(
+			75deg,
+			transparent 30%,
+			rgba(255, 255, 255, 0.04) 42%,
+			rgba(201, 243, 109, 0.22) 50%,
+			rgba(255, 255, 255, 0.08) 58%,
+			transparent 70%
+		);
+		transform: translateX(-160%) skewX(-20deg);
+		animation: shimmer-sweep 4.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	.shimmer-light {
+		position: relative;
+		overflow: hidden;
+		isolation: isolate;
+	}
+
+	.shimmer-light::after {
+		content: '';
+		position: absolute;
+		top: -50%;
+		left: -50%;
+		width: 200%;
+		height: 200%;
+		background: linear-gradient(
+			75deg,
+			transparent 32%,
+			rgba(8, 183, 122, 0.06) 43%,
+			rgba(201, 243, 109, 0.2) 50%,
+			rgba(8, 183, 122, 0.08) 57%,
+			transparent 68%
+		);
+		transform: translateX(-160%) skewX(-20deg);
+		animation: shimmer-sweep 4.6s infinite cubic-bezier(0.4, 0, 0.2, 1);
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	.shimmer-btn {
+		position: relative;
+		overflow: hidden;
+		isolation: isolate;
+	}
+
+	.shimmer-btn::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			90deg,
+			transparent 15%,
+			rgba(255, 255, 255, 0.45) 50%,
+			transparent 85%
+		);
+		transform: translateX(-130%) skewX(-20deg);
+		animation: shimmer-sweep 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+		pointer-events: none;
+		z-index: 10;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -3,16 +3,38 @@
 namespace App\Services\AI;
 
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class GeminiProvider implements AIProviderInterface
 {
+    /**
+     * @var array<int, string>
+     */
+    private array $models;
+
+    /**
+     * @param  array<int, string>  $fallbackModels
+     */
     public function __construct(
         private string $apiKey,
-        private string $model = 'gemini-3.6-flash',
+        string $model = 'gemini-3.6-flash',
         private string $baseUrl = 'https://generativelanguage.googleapis.com/v1beta',
-    ) {}
+        array $fallbackModels = [],
+    ) {
+        $this->models = array_values(array_unique(array_filter([$model, ...$fallbackModels])));
+    }
+
+    /**
+     * Get candidate models in fallback order.
+     *
+     * @return array<int, string>
+     */
+    public function getModels(): array
+    {
+        return $this->models;
+    }
 
     public function generateResponse(array $context, string $prompt): string
     {
@@ -74,22 +96,48 @@ class GeminiProvider implements AIProviderInterface
         return (int) min(100, max(0, $data['score'] ?? 0));
     }
 
-    private function post(string $endpoint, array $payload)
+    /**
+     * Send HTTP request with automatic fallback to next models upon failure.
+     */
+    private function post(string $endpoint, array $payload): Response
     {
-        $response = Http::withHeaders(['x-goog-api-key' => $this->apiKey])
-            ->timeout(30)
-            ->post("{$this->baseUrl}/models/{$this->model}:{$endpoint}", $payload);
+        $lastException = null;
+        $lastStatus = 500;
 
-        if ($response->failed()) {
-            Log::error('Gemini request failed', [
-                'endpoint' => $endpoint,
-                'status' => $response->status(),
-            ]);
+        foreach ($this->models as $index => $candidateModel) {
+            try {
+                $response = Http::withHeaders(['x-goog-api-key' => $this->apiKey])
+                    ->timeout(25)
+                    ->retry(2, 500, throw: false)
+                    ->post("{$this->baseUrl}/models/{$candidateModel}:{$endpoint}", $payload);
 
-            throw AIProviderException::requestFailed('gemini', $response->status());
+                if ($response->successful()) {
+                    if ($index > 0) {
+                        Log::info("Gemini fallback succeeded using model [{$candidateModel}] after prior model failed.");
+                    }
+
+                    return $response;
+                }
+
+                $lastStatus = $response->status();
+                Log::warning("Gemini model [{$candidateModel}] failed with HTTP status {$lastStatus}", [
+                    'endpoint' => $endpoint,
+                    'error' => $response->json('error.message') ?? $response->body(),
+                ]);
+            } catch (ConnectionException $e) {
+                $lastException = $e;
+                Log::warning("Gemini model [{$candidateModel}] connection error: {$e->getMessage()}");
+            } catch (\Throwable $e) {
+                $lastException = $e;
+                Log::warning("Gemini model [{$candidateModel}] error: {$e->getMessage()}");
+            }
         }
 
-        return $response;
+        if ($lastException instanceof ConnectionException) {
+            throw AIProviderException::unreachable('gemini', $lastException);
+        }
+
+        throw AIProviderException::requestFailed('gemini', $lastStatus);
     }
 
     private function jsonRequest(string $systemPrompt, string $userContent): array
@@ -111,12 +159,8 @@ class GeminiProvider implements AIProviderInterface
             $decoded = json_decode((string) $response->json('candidates.0.content.parts.0.text', '{}'), true);
 
             return is_array($decoded) ? $decoded : [];
-        } catch (ConnectionException $e) {
-            Log::error('Gemini connection error', ['error' => $e->getMessage()]);
-
-            return [];
         } catch (\Throwable $e) {
-            Log::error('Gemini request failed', ['error' => $e->getMessage()]);
+            Log::error('Gemini jsonRequest failed across all models', ['error' => $e->getMessage()]);
 
             return [];
         }
